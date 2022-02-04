@@ -12,7 +12,10 @@ const app = express();
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
-const upload = multer({storage});
+
+const upload = multer({storage,
+	limits:{fileSize:1000000}
+});
 
 app.get('/',async (req,res,next) => {
 	res.sendFile(path.join(__dirname,'index.html'));
@@ -32,6 +35,16 @@ app.delete('/:cloudinaryId',async (req,res,next)=> {
 	}
 	
 });
+
+app.use((err,req,res,next)=> {
+		res.json({
+			error : {
+				name: err.name,
+				message:err.message,
+			}
+		})
+	console.log(err);
+})
 
 app.listen(4000,()=> {
 	console.log('app listening on port 4000');

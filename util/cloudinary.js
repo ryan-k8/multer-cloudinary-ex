@@ -1,5 +1,5 @@
 const cloudinary = require('cloudinary').v2;
-
+const {MulterError} = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 require('dotenv').config();
 
@@ -9,9 +9,17 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const allowedFormats = ['image/jpeg','image/jpg','image/png'];
+
 const storage = new CloudinaryStorage({
     cloudinary,
     params: async (req,file)=> {
+      console.log(file)
+      if (!allowedFormats.includes(file.mimetype)) {
+           const err = new MulterError();
+           err.message = 'file of this type not allowed';
+           throw err;
+      }
       return {
          folder: process.env.CLOUDINARY_FOLDER_NAME,
          allowedFormats: ['jpeg','png','jpg'],
