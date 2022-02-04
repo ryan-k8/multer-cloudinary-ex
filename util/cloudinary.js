@@ -14,7 +14,7 @@ const allowedFormats = ['image/jpeg','image/jpg','image/png'];
 const storage = new CloudinaryStorage({
     cloudinary,
     params: async (req,file)=> {
-      console.log(file)
+      
       if (!allowedFormats.includes(file.mimetype)) {
            const err = new MulterError();
            err.message = 'file of this type not allowed';
